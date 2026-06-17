@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="Quiz_CSS.css">
+
+    <script>
+    if (!localStorage.getItem('token')) {
+        window.location.href = "LogIn.html";
+    }
+    </script>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <a href="Quiz.html">Quiz</a>
+        <a href="About.html">About</a>
+        <a href="LogIn.html">Log In</a>
+        <a href="Socials.html">Socials</a>
+        <a href="dashboard.html">Dashboard</a>
+    </div>
+
+    <div id="Text_Index">
+        <div class="content">
+
+            <h1>Your Quiz Dashboard</h1>
+
+            <div id="stats">
+                <p>Total Games: <span id="totalGames">0</span></p>
+                <p>Best Score: <span id="bestScore">0</span></p>
+            </div>
+
+            <h2>Your Score History</h2>
+            <ul id="scoresList"></ul>
+
+            <button class="loginButton" onclick="logout()">Logout</button>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-row">
+            </div>
+            <p>Navigation</p>
+            <div class="Pages_Index">
+                <a href="Quiz.html" class="Pages_Index">Quiz</a>
+                <br>
+                <a href="About.html" class="Pages_Index">About</a>
+                <br>
+                <a href="LogIn.html" class="Pages_Index">Log In</a>
+                <br>
+                <a href="Socials.html" class="Pages_Index">Socials</a>
+                <br>
+                <a href="dashboard.html" class="Pages_Index1">Dashboard</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    async function loadScores() {
+        const token = localStorage.getItem('token');
+
+        const response = await fetch('http://localhost:5000/api/scores', {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
+
+        const scores = await response.json();
+
+        const list = document.getElementById('scoresList');
+        const totalGamesEl = document.getElementById('totalGames');
+        const bestScoreEl = document.getElementById('bestScore');
+
+        list.innerHTML = '';
+
+        if (scores.length === 0) {
+            list.innerHTML = "No scores yet!";
+            return;
+        }
+
+        let bestScore = 0;
+
+        scores.forEach(score => {
+
+            const li = document.createElement('li');
+
+            
+            const date = new Date(score.createdAt).toLocaleDateString();
+            li.textContent = `Score: ${score.score}/${score.totalQuestions} - ${date}`;
+
+
+            li.textContent = `Score: ${score.score}/${score.totalQuestions} - ${date}`;
+            list.appendChild(li);
+
+            if (score.score > bestScore) {
+                bestScore = score.score;
+            }
+        });
+
+        totalGamesEl.textContent = scores.length;
+        bestScoreEl.textContent = bestScore;
+    }
+
+    function logout() {
+        localStorage.removeItem('token');
+        window.location.href = "LogIn.html";
+    }
+
+    loadScores();
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h1>Your Scores</h1>
+<ul id="scoresList"></ul>
+
+<script>
+async function loadScores() {
+    const token = localStorage.getItem('token');
+
+    const response = await fetch('http://localhost:5000/api/scores', {
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    });
+
+    const scores = await response.json();
+
+    const list = document.getElementById('scoresList');
+    list.innerHTML = '';
+
+    scores.forEach(score => {
+        const li = document.createElement('li');
+        li.textContent = `Score: ${score.score}/${score.totalQuestions}`;
+        list.appendChild(li);
+    });
+}
+
+loadScores();
+</script>

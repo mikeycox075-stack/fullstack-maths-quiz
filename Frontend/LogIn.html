@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Login_Quiz</title>
+	<link rel="stylesheet" href="Quiz_CSS.css">
+</head>
+<body>
+	<div class="navbar">
+		<a href="Quiz.html">Quiz</a>
+		<a href="About.html">About</a>
+		<a href="LogIn.html">Log In</a>
+		<a href="Socials.html">Socials</a>
+		<a href="dashboard.html">Dashboard</a>		
+	</div>
+	<div id="Text_Index">
+		<h1>Log In</h1>
+		<br>
+			<div class="content">
+				<form id="login-frm">
+					<label for="Em">Email</label>
+					<input id="Em" type="text" name="Em" placeholder="Your email...">
+					<!-- 	-->
+					<label for="Pas">Type in your password...</label>
+					<input id="Pas" type="password" name="Pas" placeholder="Please input your password...">
+					<!-- login btn -->
+					<button class="loginButton" type="submit"> Log in </button>
+				</form>
+				<button id="loginButton" onclick="location.href='SignUp.html'" type="button">Sign Up</button>
+				<br>
+			</div>
+
+<script>
+	document.getElementById("login-frm").addEventListener("submit", async function(e) {
+	    e.preventDefault();
+
+	    const email = document.getElementById("Em").value;
+	    const password = document.getElementById("Pas").value;
+
+	    const response = await fetch('http://localhost:5000/api/login', {
+	        method: 'POST',
+	        headers: {
+	            'Content-Type': 'application/json'
+	        },
+	        body: JSON.stringify({
+	            email: email,
+	            password: password
+	        })
+	    });
+
+	    const data = await response.json();
+
+	    if (data.token) {
+	        localStorage.setItem('token', data.token);
+
+	        alert("Login successful!");
+
+	        window.location.href = "Quiz.html";
+	    } else {
+	        alert(data.message);
+	    }
+	});
+</script>
+
+	</div>
+	<footer>
+    	<div class="footer-container">
+        	<div class="footer-row">
+        		<p>  </p>
+        	</div>
+        	<p>Navigation</p>
+        	<div class="Pages_Index">
+	    	    <a href="Quiz.html" class="Pages_Index">Quiz</a>
+	    	    <br>
+				<a href="About.html" class="Pages_Index">About</a>
+				<br>
+				<a href="LogIn.html" class="Pages_Index1">Log In</a>
+				<br>
+				<a href="Socials.html" class="Pages_Index">Socials</a>
+				<br>
+				<a href="dashboard.html" class="Pages_Index">Dashboard</a>
+			</div>
+    	</div>
+	</footer>
+</body>
+</html>

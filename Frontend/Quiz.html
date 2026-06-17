@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Quiz_Quiz</title>
+	<link rel="stylesheet" href="Quiz_CSS.css">
+	<script>
+		if (!localStorage.getItem('token')) {
+		    window.location.href = "LogIn.html";
+		}
+	</script>
+</head>
+<body>
+	<div class="navbar">
+		<a href="Quiz.html">Quiz</a>
+		<a href="About.html">About</a>
+		<a href="LogIn.html">Log In</a>
+		<a href="Socials.html">Socials</a>
+		<a href="dashboard.html">Dashboard</a>		
+	</div>
+	<div id="Text_Index">
+		<h1>QUIZ</h1>
+		<h1>Scannas Maths Quiz</h1>
+		<br>
+		<p>You will find the Quiz Below</p>
+		<br> 
+
+			<div id="quiz-container" class="content">
+
+			    <h1 id="question">Loading question...</h1>
+
+			    <button class="loginButton" onclick="checkAnswer(0)" id="btn0"></button>
+			    <button class="loginButton" onclick="checkAnswer(1)" id="btn1"></button>
+			    <button class="loginButton" onclick="checkAnswer(2)" id="btn2"></button>
+
+			</div>
+
+		<br>
+		<button id="loginButton" onclick="location.href='LogIn.html'" type="button">Log In</button>
+		<br>
+	</div>
+	<footer>
+    	<div class="footer-container">
+        	<div class="footer-row">
+        	</div>
+        	<p>Navigation</p>
+        	<div class="Pages_Index">
+	    	    <a href="Quiz.html" class="Pages_Index1">Quiz</a>
+	    	    <br>
+				<a href="About.html" class="Pages_Index">About</a>
+				<br>
+				<a href="LogIn.html" class="Pages_Index">Log In</a>
+				<br>
+				<a href="Socials.html" class="Pages_Index">Socials</a>
+				<br>
+				<a href="dashboard.html" class="Pages_Index">Dashboard</a>
+			</div>
+    	</div>
+	</footer>
+	<script>
+	async function sendScore(score, total) {
+	    const token = localStorage.getItem('token');
+
+	    const response = await fetch('http://localhost:5000/api/score', {
+	        method: 'POST',
+	        headers: {
+	            'Content-Type': 'application/json',
+	            'Authorization': 'Bearer ' + token
+	        },
+	        body: JSON.stringify({
+	            score: score,
+	            totalQuestions: total
+	        })
+	    });
+
+	    const data = await response.json();
+	    console.log(data);
+	}
+	</script>
+
+
+<script>
+
+if (!localStorage.getItem('token')) {
+    window.location.href = "LogIn.html";
+}
+
+
+const allQuestions = [
+    { question: "What is 5 - 2?", answers: ["1","3","2"], correct: 1 },
+    { question: "What is 7 - 2?", answers: ["1","5","2"], correct: 1 },
+    { question: "What is 7 * 2?", answers: ["14","11","19"], correct: 0 },
+    { question: "What is 1 * 1?", answers: ["1","2","0"], correct: 0 },
+    { question: "What is 2 * 5?", answers: ["5","3","10"], correct: 2 },
+    { question: "What is 10 * 10?", answers: ["100","150","170"], correct: 0 },
+    { question: "What is 100 - 75?", answers: ["25","35","45"], correct: 0 },
+    { question: "What is 1 - 3?", answers: ["-1","-2","0"], correct: 1 },
+    { question: "What is 4 * 4?", answers: ["16","16.1","15"], correct: 0 },
+    { question: "What is the difference between 4 and 10?", answers: ["7","6","4"], correct: 1 },
+    { question: "What is 5 * 5?", answers: ["25","30","20"], correct: 0 },
+    { question: "What is 7 * 7?", answers: ["47","49","42"], correct: 1 },
+    { question: "What is 2 - 100?", answers: ["-98","-67","0"], correct: 0 },
+    { question: "What is 5 * 4?", answers: ["20","15","10"], correct: 0 },
+    { question: "What is 200 / 2?", answers: ["100","20","40"], correct: 0 },
+    { question: "What is 8 * 8?", answers: ["54","64","74"], correct: 1 },
+    { question: "What is 5 - 25?", answers: ["0","-20","20"], correct: 1 },
+    { question: "What is 1 * 100?", answers: ["100","101","1000"], correct: 0 },
+    { question: "What is 20 * 4?", answers: ["80","100","120"], correct: 0 },
+    { question: "What is 5 times 50?", answers: ["300","250","200"], correct: 1 }
+];
+
+function getRandomQuestions(allQuestions, num) {
+    const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, num);
+}
+
+const questions = getRandomQuestions(allQuestions, 10);
+
+
+let currentQuestion = 0;
+let score = 0;
+
+function loadQuestion() {
+    const q = questions[currentQuestion];
+
+    document.getElementById('question').textContent = q.question;
+    document.getElementById('btn0').textContent = q.answers[0];
+    document.getElementById('btn1').textContent = q.answers[1];
+    document.getElementById('btn2').textContent = q.answers[2];
+}
+
+function checkAnswer(choice) {
+    if (choice === questions[currentQuestion].correct) {
+        score++;
+        alert("Correct!");
+    } else {
+        alert("Wrong!");
+    }
+
+    currentQuestion++;
+
+    if (currentQuestion < questions.length) {
+        loadQuestion();
+    } else {
+        endQuiz();
+    }
+}
+
+async function endQuiz() {
+    alert(`Quiz finished! Score: ${score}/${questions.length}`);
+
+    const token = localStorage.getItem('token');
+
+    await fetch('http://localhost:5000/api/score', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+            score: score,
+            totalQuestions: questions.length
+        })
+    });
+
+    window.location.href = "dashboard.html";
+}
+loadQuestion();
+
+</script>
+
+
+</body>
+</html>

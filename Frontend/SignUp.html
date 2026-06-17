@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Login_Quiz</title>
+	<link rel="stylesheet" href="Quiz_CSS.css">
+</head>
+<body>
+	<div class="navbar">
+		<a href="Quiz.html">Quiz</a>
+		<a href="About.html">About</a>
+		<a href="LogIn.html">Log In</a>
+		<a href="Socials.html">Socials</a>
+		<a href="dashboard.html">Dashboard</a>		
+	</div>
+	<div id="Text_Index">
+		<h1>Sign Up</h1>
+		<br>
+
+            <div class="signup-col">
+                <div class="backgroundforform">
+					<div class="Sign_up_form_menu">
+						<div class="container_form">
+		  					<form id="login-frm">
+		  						<label id="Email" for="Email">Email</label>
+		    					<input id="Em" type="text" id="Em" name="Em" placeholder="Your email...">
+		    					<span id="Em-error" class="error-msg"></span>
+		    					<label id="Pas" for="Password">Set a password</label>
+		    					<input id="Password" type="Password" name="Pas" placeholder="Min 9 characters">
+		    					<span id="Pas-error" class="error-msg"></span>
+		    					<label id="Password2" for="Password">Confirm password</label>
+		    					<input id="Pas2" type="Password" name="Pas2" placeholder="Repeat your password">
+		    					<span id="Pas2-error" class="error-msg"></span>
+		    					<label id="FirstName" for="fname">Name</label>
+		    					<input id="Fn" type="text" name="Fn" placeholder="Your name..">
+		    					<span id="Fn-error" class="error-msg"></span>
+		    					<label id="SecondName" for="Sname">Surname</label>
+		    					<input id="Sn" type="text" name="Sn" placeholder="Your Surname..">
+		    					<span id="Sn-error" class="error-msg"></span>
+		    					<label id="Title" for="Title">Title</label>
+		    					<select id="Titles" name="Titl">
+									<option value="Mr">Mr</option>
+									<option value="Mrs">Mrs</option>
+									<option value="Ms">Ms</option>
+									<option value="Miss">Mis</option>
+									<option value="Master">Master</option>
+									<option value="Other">Other</option>
+	  							</select>
+									<button type="submit" class="loginButton"> Sign Up </button>
+		  					</form>
+						</div>
+					</div>
+				</div>
+            </div>
+
+		<button id="loginButton" onclick="location.href='LogIn.html'" type="button">Log In</button>
+		<br>
+	</div>
+
+
+<script>
+document.getElementById("login-frm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const email = document.getElementById("Em").value;
+    const password = document.getElementById("Password").value;
+    const confirmPassword = document.getElementById("Pas2").value;
+    const name = document.getElementById("Fn").value;
+
+    if (password !== confirmPassword) {
+        alert("Passwords do not match");
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:5000/api/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email,
+                password,
+                name
+            })
+        });
+
+        const data = await response.json();
+
+        console.log(data); 
+
+        if (response.ok) {
+            alert("Signup successful!");
+            window.location.href = "LogIn.html";
+        } else {
+            alert(data.message || "Signup failed");
+        }
+
+    } catch (error) {
+        console.error(error);
+        alert("Something went wrong");
+    }
+});
+</script>
+
+
+	<footer>
+    	<div class="footer-container">
+        	<div class="footer-row">
+        	</div>
+        	<p>Navigation</p>
+        	<div class="Pages_Index">
+	    	    <a href="Quiz.html" class="Pages_Index">Quiz</a>
+	    	    <br>
+				<a href="About.html" class="Pages_Index">About</a>
+				<br>
+				<a href="LogIn.html" class="Pages_Index1">Log In</a>
+				<br>
+				<a href="Socials.html" class="Pages_Index">Socials</a>
+				<br>
+				<a href="dashboard.html" class="Pages_Index">Dashboard</a>
+				<br>
+			</div>
+    	</div>
+	</footer>
+</body>
+</html>
